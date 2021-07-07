@@ -1,33 +1,32 @@
-import 'package:crypto_currencies/pages/moedas_detalhes.dart';
-import 'package:crypto_currencies/repositories/favorites_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/currency.dart';
-import '/repositories/moeda_repository.dart';
+import '../repositories/currency_repository.dart';
+import '/screens/currency_detail.screen.dart';
+import '/repositories/favorites_repository.dart';
 
-class MoedasPage extends StatefulWidget {
-  const MoedasPage({Key? key}) : super(key: key);
+class CurrencyScreen extends StatefulWidget {
+  const CurrencyScreen({Key? key}) : super(key: key);
 
   @override
-  _MoedasPageState createState() => _MoedasPageState();
+  _CurrencyScreenState createState() => _CurrencyScreenState();
 }
 
-class _MoedasPageState extends State<MoedasPage> {
-  final tabelaMoedas = MoedaRepository.tabela;
+class _CurrencyScreenState extends State<CurrencyScreen> {
+  final currenciesList = CurrencyRepository.tabela;
   NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
-  List<Moeda> selecionadas = [];
+  List<Currency> currencySelected = [];
   late FavoritesRepository favorites;
 
   @override
   Widget build(BuildContext context) {
-    // Duas formas de obter a instancia do provider
     // favorites = Provider.of<FavoritesRepository>(context);
     favorites = context.watch<FavoritesRepository>();
 
-    appBarDinamica() {
-      if (selecionadas.isEmpty) {
+    dynamicAppBar() {
+      if (currencySelected.isEmpty) {
         return AppBar(
           title: Text("Cripto Moedas"),
         );
@@ -36,12 +35,16 @@ class _MoedasPageState extends State<MoedasPage> {
           leading: IconButton(
             onPressed: () {
               setState(() {
-                selecionadas = [];
+                currencySelected = [];
               });
             },
             icon: Icon(Icons.arrow_back),
           ),
-          title: Text('${selecionadas.length} selecionadas'),
+          title: Text(
+            currencySelected.length == 1
+                ? '${currencySelected.length} selecionada'
+                : '${currencySelected.length} selecionadas',
+          ),
           backgroundColor: Colors.blueGrey[50],
           elevation: 1,
           iconTheme: IconThemeData(color: Colors.black87),
@@ -56,69 +59,74 @@ class _MoedasPageState extends State<MoedasPage> {
       }
     }
 
-    void mostrarDetalhes(Moeda moeda) {
+    void showDetails(Currency moeda) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => MoedasDetalhesPage(moeda: moeda)),
+        MaterialPageRoute(
+          builder: (_) => CurrencyDetailScreen(currency: moeda),
+        ),
       );
     }
 
-    void limparSelecionadas() {
+    void cleanSelected() {
       setState(() {
-        selecionadas = [];
+        currencySelected = [];
       });
     }
 
     return Scaffold(
-      appBar: appBarDinamica(),
+      appBar: dynamicAppBar(),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int moeda) {
           return ListTile(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(12)),
             ),
-            leading: selecionadas.contains(tabelaMoedas[moeda])
+            leading: currencySelected.contains(currenciesList[moeda])
                 ? CircleAvatar(child: Icon(Icons.check))
                 : SizedBox(
-                    child: Image.asset(tabelaMoedas[moeda].icone),
+                    child: Image.asset(currenciesList[moeda].icon),
                     width: 40,
                   ),
             title: Row(
               children: [
-                Text(
-                  tabelaMoedas[moeda].nome,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Text(
+                    currenciesList[moeda].name,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-                if (favorites.list.contains(tabelaMoedas[moeda]))
+                if (favorites.list.contains(currenciesList[moeda]))
                   Icon(Icons.circle, color: Colors.amber, size: 8)
               ],
             ),
-            trailing: Text(real.format(tabelaMoedas[moeda].preco)),
-            selected: selecionadas.contains(tabelaMoedas[moeda]),
+            trailing: Text(real.format(currenciesList[moeda].price)),
+            selected: currencySelected.contains(currenciesList[moeda]),
             selectedTileColor: Colors.indigo[50],
             onLongPress: () {
               setState(() {
-                selecionadas.contains(tabelaMoedas[moeda])
-                    ? selecionadas.remove(tabelaMoedas[moeda])
-                    : selecionadas.add(tabelaMoedas[moeda]);
+                currencySelected.contains(currenciesList[moeda])
+                    ? currencySelected.remove(currenciesList[moeda])
+                    : currencySelected.add(currenciesList[moeda]);
               });
             },
-            onTap: () => mostrarDetalhes(tabelaMoedas[moeda]),
+            onTap: () => showDetails(currenciesList[moeda]),
           );
         },
         padding: EdgeInsets.all(16),
         separatorBuilder: (_, __) => Divider(),
-        itemCount: tabelaMoedas.length,
+        itemCount: currenciesList.length,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: selecionadas.isNotEmpty
+      floatingActionButton: currencySelected.isNotEmpty
           ? FloatingActionButton.extended(
               onPressed: () {
-                favorites.saveAll(selecionadas);
-                limparSelecionadas();
+                favorites.saveAll(currencySelected);
+                cleanSelected();
               },
               icon: Icon(Icons.star),
               label: Text(

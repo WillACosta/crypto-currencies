@@ -1,29 +1,29 @@
-import 'package:crypto_currencies/models/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-class MoedasDetalhesPage extends StatefulWidget {
-  MoedasDetalhesPage({Key? key, required this.moeda}) : super(key: key);
-  Moeda moeda;
+import '/models/currency.dart';
+
+class CurrencyDetailScreen extends StatefulWidget {
+  CurrencyDetailScreen({Key? key, required this.currency}) : super(key: key);
+  Currency currency;
 
   @override
-  _MoedasDetalhesPageState createState() => _MoedasDetalhesPageState();
+  _CurrencyDetailScreenState createState() => _CurrencyDetailScreenState();
 }
 
-class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
+class _CurrencyDetailScreenState extends State<CurrencyDetailScreen> {
   NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
   final _form = GlobalKey<FormState>();
   final _valor = TextEditingController();
   double quantidade = 0;
 
-  void comprarMoeda() {
+  void buyCurrency() {
     if (_form.currentState!.validate()) {
       // Save sale
 
       Navigator.pop(context);
 
-      // Exibe um toast na parte inferior da tela
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Compra realizada com sucesso!"),
       ));
@@ -34,7 +34,7 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.moeda.nome),
+          title: Text(widget.currency.name),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -47,12 +47,12 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      child: Image.asset(widget.moeda.icone),
+                      child: Image.asset(widget.currency.icon),
                       width: 55,
                     ),
                     Container(width: 10),
                     Text(
-                      real.format(widget.moeda.preco),
+                      real.format(widget.currency.price),
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w600,
@@ -69,7 +69,7 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
                       width: MediaQuery.of(context).size.width,
                       child: Container(
                         child: Text(
-                          "$quantidade ${widget.moeda.sigla}",
+                          "$quantidade ${widget.currency.abbreviation}",
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.teal,
@@ -117,7 +117,7 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
                     setState(() {
                       quantidade = value.isEmpty
                           ? 0
-                          : double.parse(value) / widget.moeda.preco;
+                          : double.parse(value) / widget.currency.price;
                     });
                   },
                 ),
@@ -126,7 +126,7 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
                 alignment: Alignment.bottomCenter,
                 margin: EdgeInsets.only(top: 24),
                 child: ElevatedButton(
-                  onPressed: comprarMoeda,
+                  onPressed: buyCurrency,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

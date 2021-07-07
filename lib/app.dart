@@ -1,5 +1,6 @@
-import 'package:crypto_currencies/pages/home_page.dart';
 import 'package:flutter/material.dart';
+
+import '/screens/home.screen.dart';
 
 class App extends StatelessWidget {
   @override

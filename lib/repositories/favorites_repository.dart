@@ -4,11 +4,11 @@ import 'package:crypto_currencies/models/currency.dart';
 import 'package:flutter/material.dart';
 
 class FavoritesRepository extends ChangeNotifier {
-  List<Moeda> _favoritesList = [];
+  List<Currency> _favoritesList = [];
 
-  UnmodifiableListView<Moeda> get list => UnmodifiableListView(_favoritesList);
+  UnmodifiableListView<Currency> get list => UnmodifiableListView(_favoritesList);
 
-  saveAll(List<Moeda> currencies) {
+  saveAll(List<Currency> currencies) {
     currencies.forEach((element) {
       if (!_favoritesList.contains(element)) _favoritesList.add(element);
     });
@@ -16,7 +16,7 @@ class FavoritesRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  remove(Moeda currency) {
+  remove(Currency currency) {
     _favoritesList.remove(currency);
     notifyListeners();
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'moedas_page.dart';
-import 'favorites_screen.dart';
+import 'currency.screen.dart';
+import 'favorites.screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: PageView(
         controller: pageController,
-        children: [MoedasPage(), FavoritesScreen()],
+        children: [CurrencyScreen(), FavoritesScreen()],
         onPageChanged: setCurrentScreen,
       ),
       bottomNavigationBar: BottomNavigationBar(

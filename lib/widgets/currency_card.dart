@@ -1,14 +1,14 @@
-import 'package:crypto_currencies/models/currency.dart';
-import 'package:crypto_currencies/pages/moedas_detalhes.dart';
-import 'package:crypto_currencies/repositories/favorites_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class CurrencyCard extends StatefulWidget {
-  Moeda moeda;
+import '/models/currency.dart';
+import '/screens/currency_detail.screen.dart';
+import '/repositories/favorites_repository.dart';
 
-  CurrencyCard({Key? key, required this.moeda}) : super(key: key);
+class CurrencyCard extends StatefulWidget {
+  CurrencyCard({Key? key, required this.currency}) : super(key: key);
+  Currency currency;
 
   @override
   _CurrencyCardState createState() => _CurrencyCardState();
@@ -26,7 +26,7 @@ class _CurrencyCardState extends State<CurrencyCard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => MoedasDetalhesPage(moeda: widget.moeda),
+        builder: (_) => CurrencyDetailScreen(currency: widget.currency),
       ),
     );
   }
@@ -43,7 +43,7 @@ class _CurrencyCardState extends State<CurrencyCard> {
           child: Row(
             children: [
               Image.asset(
-                widget.moeda.icone,
+                widget.currency.icon,
                 height: 40,
               ),
               Expanded(
@@ -53,14 +53,14 @@ class _CurrencyCardState extends State<CurrencyCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.moeda.nome,
+                        widget.currency.name,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
-                        widget.moeda.sigla,
+                        widget.currency.abbreviation,
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.black45,
@@ -80,7 +80,7 @@ class _CurrencyCardState extends State<CurrencyCard> {
                   borderRadius: BorderRadius.circular(100),
                 ),
                 child: Text(
-                  real.format(widget.moeda.preco),
+                  real.format(widget.currency.price),
                   style: TextStyle(
                     fontSize: 16,
                     color: precoColor['down'],
@@ -97,7 +97,7 @@ class _CurrencyCardState extends State<CurrencyCard> {
                       onTap: () {
                         Navigator.pop(context);
                         Provider.of<FavoritesRepository>(context, listen: false)
-                            .remove(widget.moeda);
+                            .remove(widget.currency);
                       },
                     ),
                   ),

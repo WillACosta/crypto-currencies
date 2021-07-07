@@ -1,7 +1,8 @@
-import 'package:crypto_currencies/repositories/favorites_repository.dart';
-import 'package:crypto_currencies/widgets/currency_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '/repositories/favorites_repository.dart';
+import '/widgets/currency_card.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 : ListView.builder(
                     itemCount: favorites.list.length,
                     itemBuilder: (_, index) {
-                      return CurrencyCard(moeda: favorites.list[index]);
+                      return CurrencyCard(currency: favorites.list[index]);
                     });
           },
         ),
