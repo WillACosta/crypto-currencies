@@ -1,3 +1,4 @@
+import 'package:crypto_currencies/screens/settings.screen.dart';
 import 'package:flutter/material.dart';
 
 import 'currency.screen.dart';
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: PageView(
         controller: pageController,
-        children: [CurrencyScreen(), FavoritesScreen()],
+        children: [CurrencyScreen(), FavoritesScreen(), SettingsScreen()],
         onPageChanged: setCurrentScreen,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -39,6 +40,8 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.list), label: "Todas"),
           BottomNavigationBarItem(icon: Icon(Icons.star), label: "Favoritas"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: "Configurações"),
         ],
         onTap: (pageIndex) {
           pageController.animateToPage(
